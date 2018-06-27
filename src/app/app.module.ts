@@ -5,16 +5,25 @@ import { AppComponent } from './app.component';
 
 import { AppRoutingModule } from './app-routing.module';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient} from '@angular/common/http';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
-import { RestApiService } from './rest-api.service';
-import { DataService } from './data.service';
-import { AuthGuardService } from './auth-guard.service';
+import { TranslateModule, TranslateLoader} from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { registerLocaleData } from '@angular/common';
+import localeTW from '@angular/common/locales/zh-Hans';
 
-import * as $ from 'jquery';
-import * as $p from 'popper.js';
-import * as $b from 'bootstrap';
+import { RestApiService } from './services/rest-api.service';
+import { DataService } from './services/data.service';
+import { AuthGuardService } from './services/auth-guard.service';
+
 import { HomeComponent } from './home/home.component';
+
+registerLocaleData(localeTW, 'zh-Hans');
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
 
 @NgModule({
   declarations: [
@@ -25,8 +34,16 @@ import { HomeComponent } from './home/home.component';
     BrowserModule,
     // BrowserAnimationsModule,
     AppRoutingModule,
+    NgbModule.forRoot(),
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    TranslateModule.forRoot({
+      loader: {
+          provide: TranslateLoader,
+          useFactory: HttpLoaderFactory,
+          deps: [HttpClient]
+      }
+  })
   ],
   providers: [RestApiService, DataService, AuthGuardService],
   bootstrap: [AppComponent]
